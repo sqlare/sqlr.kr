@@ -1,9 +1,10 @@
-from logging import debug
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 import json
+import random
+import string
 
 app = FastAPI()
 
@@ -31,6 +32,14 @@ short_links = load_short_links()
 
 class Link(BaseModel):
     url: str
+
+# 단축 링크 생성
+def generate_short_link():
+    letters = string.ascii_letters
+    while True:
+        short_key = ''.join(random.choice(letters) for _ in range(4))
+        if short_key not in short_links:
+            return short_key
 
 @app.get("/{short_key}")
 async def redirect_to_original(short_key: str):
