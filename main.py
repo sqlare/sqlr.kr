@@ -24,7 +24,7 @@ def generate_short_link():
 async def shorten_link(link: Link):
     short_key = generate_short_link()
     short_links[short_key] = link.url
-    return {"short_link": f"https://z.64bit.kr/{short_key}"}
+    return {"short_link": f"https://sqlr.kr/{short_key}"}
 
 @app.get("/{short_key}")
 async def redirect_to_original(short_key: str):
