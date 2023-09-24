@@ -3,6 +3,99 @@
 
 <head>
     <title>단축 링크 생성기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            text-align: center;
+            margin: 20px auto;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="url"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #short-link {
+            text-align: center;
+            display: none;
+            margin-top: 20px;
+        }
+
+        #short-link p {
+            font-weight: bold;
+        }
+
+        #short-link-url {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        #short-link-url:hover {
+            text-decoration: underline;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
@@ -12,7 +105,7 @@
         <input type="url" id="url" name="url" required>
         <button type="submit">단축 링크 생성</button>
     </form>
-    <div id="short-link" style="display: none;">
+    <div id="short-link">
         <p>생성된 단축 링크:</p>
         <a id="short-link-url" href=""></a>
     </div>
