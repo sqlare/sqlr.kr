@@ -16,12 +16,13 @@
             height: 100vh;
         }
 
-        h1 {
+        h1 a {
             text-align: center;
-            color: #333;
+            color: #fff;
         }
 
         form {
+            color: white;
             text-align: center;
             max-width: 400px;
             padding: 20px;
@@ -44,7 +45,7 @@
             padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
-            border-radius: 3px;
+            border-radius: 10px;
         }
 
         button[type="submit"] {
@@ -52,7 +53,7 @@
             color: #fff;
             border: none;
             padding: 10px 20px;
-            border-radius: 3px;
+            border-radius: 10px;
             cursor: pointer;
         }
 
@@ -61,12 +62,14 @@
         }
 
         #short-link {
+            color: white;
             text-align: center;
             display: none;
             margin-top: 20px;
         }
 
         #short-link p {
+            color: white;
             font-weight: bold;
         }
 
@@ -80,18 +83,20 @@
         }
 
         h2 {
+            color: white;
             text-align: center;
             margin-top: 20px;
-            color: #333;
         }
 
         ul {
+            color: white;
             list-style-type: none;
             padding: 0;
             text-align: center;
         }
 
         li {
+            color: white;
             margin: 10px 0;
         }
 
@@ -107,7 +112,7 @@
 </head>
 
 <body>
-    <h1>단축 링크 생성기</h1>
+    <h1><a href="https://sqlr.kr">sqlr.kr</a></h1>
     <form id="shorten-form">
         <label for="url">원래 URL:</label>
         <input type="url" id="url" name="url" required>
@@ -123,7 +128,7 @@
     <ul>
         {% for short_key, original_url in short_links.items() %}
         <li>
-            <a href="/{{ short_key }}">{{ short_key }}</a>: {{ original_url }}
+            <a href="/{{ short_key }}">https://sqlr.kr{{ short_key }}</a>: {{ original_url }}
         </li>
         {% endfor %}
     </ul>
