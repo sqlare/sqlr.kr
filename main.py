@@ -41,6 +41,10 @@ def generate_short_link():
         if short_key not in short_links:
             return short_key
 
+@app.get("/list", response_class=HTMLResponse)
+async def list(request: Request):
+    return templates.TemplateResponse("list.html", {"request": request, "short_links": short_links})
+
 @app.get("/{short_key}")
 async def redirect_to_original(short_key: str):
     if short_key in short_links:
@@ -67,8 +71,10 @@ async def shorten_link(link: Link):
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "short_links": short_links})
+    return templates.TemplateResponse("index.html", {"request": request})
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=1111)
+
+# 코체 바보

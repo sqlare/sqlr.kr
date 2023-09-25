@@ -10,7 +10,6 @@
             margin: 0;
             padding: 0;
             display: flex;
-            text-align: center;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -57,19 +56,6 @@
             color: white;
         }
 
-        main {
-            width: 100vw;
-            height: 90%;
-            flex: 9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            text-align: center;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
         h1 a {
             text-align: center;
             color: #fff;
@@ -78,13 +64,11 @@
         form {
             color: white;
             text-align: center;
-            width: 40%;
-            height: 25%;
-            /* Change to auto for dynamic height */
+            max-width: 400px;
             padding: 20px;
             background-color: #252B38;
-            border-radius: 10px;
-            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4);
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -97,8 +81,7 @@
         }
 
         input[type="url"] {
-            width: 80%;
-            height: 20px;
+            width: 100%;
             padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
@@ -165,15 +148,6 @@
         a:hover {
             text-decoration: underline;
         }
-
-        @media (max-width: 768px) {
-
-            /* Add mobile-specific styles here */
-            form {
-                width: 100%;
-                /* Make the form full width on smaller screens */
-            }
-        }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -187,19 +161,16 @@
             <li><a href="/">sqlr.kr</a></li>
         </ul>
     </header>
-    <main>
-        <h1><a href=" https://sqlr.kr">🔗 ➡️ 💨<br />sqlr.kr</a></h1>
-        <br>
-        <form id="shorten-form">
-            <input type="url" id="url" name="url" placeholder="🔗 ㅣ 링크 (URL)" required>
-            <br>
-            <button type="submit">단축 링크 생성</button>
-        </form>
-        <div id="short-link">
-            <p>생성된 단축 링크:</p>
-            <a id="short-link-url" href=""></a>
-        </div>
-    </main>
+    <!-- 단축 링크 리스트 표시 -->
+    <h1><a href="https://sqlr.kr">🔗 ➡️ 💨<br />sqlr.kr</a></h1>
+    <ul>
+        {% for short_key, original_url in short_links.items() %}
+        <li>
+            <a href="/{{ short_key }}">https://sqlr.kr/{{ short_key }}</a>: {{ original_url }}
+        </li>
+        {% endfor %}
+    </ul>
+
     <script>
         document.getElementById("shorten-form").addEventListener("submit", function (event) {
             event.preventDefault();
