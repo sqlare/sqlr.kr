@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Undefined</title>
+    <title>🔗 ➡️ 💨</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -10,6 +10,7 @@
             margin: 0;
             padding: 0;
             display: flex;
+            text-align: center;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -32,13 +33,14 @@
         }
 
         header h1 {
-            width: 10%;
+
+            width: 20%;
             margin-left: 20px;
         }
 
         header ul {
             display: flex;
-            width: 90%;
+            width: 80%;
             text-align: left;
             flex-direction: row;
             align-items: center;
@@ -56,6 +58,19 @@
             color: white;
         }
 
+        main {
+            width: 100vw;
+            height: 90%;
+            flex: 9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            text-align: center;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
         h1 a {
             text-align: center;
             color: #fff;
@@ -64,11 +79,13 @@
         form {
             color: white;
             text-align: center;
-            max-width: 400px;
+            width: 40%;
+            height: 25%;
+            /* Change to auto for dynamic height */
             padding: 20px;
             background-color: #252B38;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -81,7 +98,8 @@
         }
 
         input[type="url"] {
-            width: 100%;
+            width: 80%;
+            height: 20px;
             padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
@@ -148,29 +166,39 @@
         a:hover {
             text-decoration: underline;
         }
+
+        @media (max-width: 768px) {
+
+            /* Add mobile-specific styles here */
+            form {
+                width: 100%;
+                /* Make the form full width on smaller screens */
+            }
+        }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
     <header>
-        <h1>👀 Untitled</h1>
+        <h1>🔗 ➡️ 💨</h1>
         <ul>
             <li><a href="https://sqlare.com">Home</a></li>
             <li> | </li>
             <li><a href="/">sqlr.kr</a></li>
         </ul>
     </header>
-    <!-- 단축 링크 리스트 표시 -->
-    <h1><a href="https://sqlr.kr">🔗 ➡️ 💨<br />sqlr.kr</a></h1>
-    <ul>
-        {% for short_key, original_url in short_links.items() %}
-        <li>
-            <a href="/{{ short_key }}">https://sqlr.kr/{{ short_key }}</a>: {{ original_url }}
-        </li>
-        {% endfor %}
-    </ul>
-
+    <main>
+        <!-- 단축 링크 리스트 표시 -->
+        <h1><a href="https://sqlr.kr">🔗 ➡️ 💨<br />sqlr.kr</a></h1>
+        <ul>
+            {% for short_key, original_url in short_links.items() %}
+            <li>
+                <a href="/{{ short_key }}">https://sqlr.kr/{{ short_key }}</a>: {{ original_url }}
+            </li>
+            {% endfor %}
+        </ul>
+    </main>
     <script>
         document.getElementById("shorten-form").addEventListener("submit", function (event) {
             event.preventDefault();
