@@ -13,6 +13,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            width: 100vw;
             height: 100vh;
         }
 
@@ -128,7 +129,7 @@
     <ul>
         {% for short_key, original_url in short_links.items() %}
         <li>
-            <a href="/{{ short_key }}">https://sqlr.kr{{ short_key }}</a>: {{ original_url }}
+            <a href="/{{ short_key }}">https://sqlr.kr/{{ short_key }}</a>: {{ original_url }}
         </li>
         {% endfor %}
     </ul>
