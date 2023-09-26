@@ -6,6 +6,7 @@ from pydantic import BaseModel
 import json
 import random
 import string
+import base64
 
 app = FastAPI()
 
@@ -25,7 +26,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # Jinja2 템플릿 설정
 templates = Jinja2Templates(directory="templates")
 
@@ -36,20 +36,28 @@ json_filename = "short_links.json"
 def load_short_links():
     try:
         with open(json_filename, "r") as file:
-            return json.load(file)
+            data = json.load(file)
+            # 'invisible' 속성이 누락된 경우 기본값 False로 추가
+            for key, value in data.items():
+                if 'invisible' not in value:
+                    value['invisible'] = False
+            return data
     except FileNotFoundError:
         return {}
 
 # JSON 파일에 데이터 저장
 def save_short_links(links):
     with open(json_filename, "w") as file:
-        json.dump(links, file)
+        # JSON 파일에 데이터를 문자열로 저장
+        json.dump(links, file, indent=4)
 
 # 단축 링크를 저장할 딕셔너리
 short_links = load_short_links()
 
 class Link(BaseModel):
     url: str
+    base: bool = False
+    invisible: bool = False
 
 # 단축 링크 생성
 def generate_short_link():
@@ -61,12 +69,14 @@ def generate_short_link():
 
 @app.get("/list", response_class=HTMLResponse)
 async def list(request: Request):
-    return templates.TemplateResponse("list.html", {"request": request, "short_links": short_links})
+    # 'invisible' 값이 False인 링크의 URL만 표시
+    visible_links = {key: value['url'] for key, value in short_links.items() if value.get('invisible', False) is False}
+    return templates.TemplateResponse("list.html", {"request": request, "short_links": visible_links})
 
 @app.get("/{short_key}")
 async def redirect_to_original(short_key: str):
     if short_key in short_links:
-        url = short_links[short_key]
+        url = short_links[short_key]['url']
         return RedirectResponse(url)  # 원래 URL로 리디렉션
     else:
         raise HTTPException(status_code=404, detail="Short link not found")
@@ -78,12 +88,20 @@ async def shorten_link(link: Link):
 
     # 이미 단축된 링크인지 확인
     for key, value in short_links.items():
-        if value == original_url:
+        if value['url'] == original_url:
             return {"short_link": f"/{key}"}
 
     # 단축 링크 생성
     short_key = generate_short_link()
-    short_links[short_key] = original_url
+    short_links[short_key] = {
+        'url': original_url,
+        'base': link.base,
+        'invisible': link.invisible
+    }
+
+    if link.base:
+        short_links[short_key]['url'] = base64.b64encode(original_url.encode()).decode()
+
     save_short_links(short_links)
     return {"short_link": f"/{short_key}"}
 
