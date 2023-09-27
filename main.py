@@ -3,6 +3,7 @@ from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import emoji
 import json
 import random
 import string
@@ -67,6 +68,19 @@ def generate_short_link():
         if short_key not in short_links:
             return short_key
 
+emoji_list = [
+    "😀", "😍", "🌟", "🔥", "👍", "✨", "🚀", "💡", "🎉", "❤️",
+    "🐱", "🐶", "🐦", "🐠", "🌻", "🌈", "🍔", "🍕", "🍦", "🍭",
+    "✈️", "🔗", "🗄️", "✏️", "👀", "📜", "🩷", "💕", "🍎", "🥕"
+]
+
+# Emoji로 단축 키 생성
+def generate_emoji_short_key():
+    while True:
+        emoji_key = ''.join(random.choice(emoji_list) for _ in range(4))
+        if emoji_key not in short_links:
+            return emoji_key
+
 @app.get("/list", response_class=HTMLResponse)
 async def list(request: Request):
     # 'invisible' 값이 False인 링크의 URL만 표시
@@ -104,6 +118,29 @@ async def shorten_link(link: Link):
 
     save_short_links(short_links)
     return {"short_link": f"/{short_key}"}
+
+@app.post("/shorten_emoji")
+async def shorten_emoji_link(link: Link):
+    original_url = link.url
+
+    # 이미 단축된 링크인지 확인
+    for key, value in short_links.items():
+        if value['url'] == original_url:
+            return {"emoji_short_link": f"/{key}"}
+
+    # 단축 링크 생성
+    emoji_short_key = generate_emoji_short_key()
+    short_links[emoji_short_key] = {
+        'url': original_url,
+        'base': link.base,
+        'invisible': link.invisible
+    }
+
+    if link.base:
+        short_links[emoji_short_key]['url'] = base64.b64encode(original_url.encode()).decode()
+
+    save_short_links(short_links)
+    return {"emoji_short_link": f"/{emoji_short_key}"}
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):

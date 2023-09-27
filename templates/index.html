@@ -70,6 +70,10 @@
             justify-content: center;
         }
 
+        h1 {
+            color: #fff;
+        }
+
         h1 a {
             text-align: center;
             color: #fff;
@@ -178,7 +182,7 @@
             }
         }
     </style>
-    <meta name="description" content="링크도 간편하게, sqlr">
+    <meta name="description" content="링크도 API로, sqlr">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7353828009482002"
         crossorigin="anonymous"></script>
@@ -186,60 +190,14 @@
 
 <body>
     <header>
-        <h1>🔗 ➡️ 💨</h1>
+        <h1><a href="https://sqlr.kr">🔗 ➡️ 💨</a></h1>
         <ul>
-            <li><a href="https://sqlare.com">Home</a></li>
-            <li> | </li>
-            <li><a href="/list">list</a></li>
+            <li><a href="https://sqlr.kr">Main</a></li>
         </ul>
     </header>
     <main>
-        <h1><a href=" https://sqlr.kr">🔗 ➡️ 💨<br />sqlr.kr</a></h1>
-        <br>
-        <form id="shorten-form">
-            <input type="url" id="url" name="url" placeholder="🔗 ㅣ 링크 (URL)" required>
-            <br>
-            <button type="submit">단축 링크 생성</button>
-        </form>
-        <div id="short-link">
-            <p>생성된 단축 링크:</p>
-            <a id="short-link-url" href=""></a>
-        </div>
+        <h1>우리 <a href="https://sqlr.kr">https://sqlr.kr</a>에서 만나요! 😢</h1>
     </main>
-    <script>
-        document.getElementById("shorten-form").addEventListener("submit", function (event) {
-            event.preventDefault();
-            const urlInput = document.getElementById("url");
-            const shortLinkDiv = document.getElementById("short-link");
-            const shortLinkUrl = document.getElementById("short-link-url");
-
-            // 입력값 가져오기
-            const originalUrl = urlInput.value;
-
-            // 서버에 POST 요청 보내기
-            fetch("/shorten", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({"url": originalUrl}),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.short_link) {
-                        shortLinkUrl.href = data.short_link;
-                        shortLinkUrl.textContent = data.short_link;
-                        shortLinkDiv.style.display = "block";
-                    } else {
-                        shortLinkDiv.style.display = "none";
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    shortLinkDiv.style.display = "none";
-                });
-        });
-    </script>
 </body>
 
 </html>
