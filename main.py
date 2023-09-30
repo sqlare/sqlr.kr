@@ -1,15 +1,20 @@
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import RedirectResponse, HTMLResponse
-from fastapi.templating import Jinja2Templates
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-import emoji
+from fastapi import *
+from fastapi.responses import *
+from fastapi.templating import *
+from fastapi.middleware.cors import *
+from pydantic import *
+from typing import *
+from schema import *
 import json
 import random
 import string
 import base64
 
-app = FastAPI()
+app = FastAPI(title="sqlr.kr", description="sqlr.kr 은 링크단축 서비스 입니다.", version="a2.0.0")
+
+from api.v1 import shorten
+
+app.include_router(shorten.router)
 
 origins = [
     "http://sqlr.kr:3000",
@@ -55,11 +60,6 @@ def save_short_links(links):
 # 단축 링크를 저장할 딕셔너리
 short_links = load_short_links()
 
-class Link(BaseModel):
-    url: str
-    base: bool = False
-    invisible: bool = False
-
 # 단축 링크 생성
 def generate_short_link():
     letters = string.ascii_letters
@@ -96,7 +96,7 @@ async def redirect_to_original(short_key: str):
         raise HTTPException(status_code=404, detail="Short link not found")
 
 # 단축 링크 생성 API
-@app.post("/shorten")
+@app.post("/shorten", response_class=ORJSONResponse)
 async def shorten_link(link: Link):
     original_url = link.url
 
@@ -119,7 +119,7 @@ async def shorten_link(link: Link):
     save_short_links(short_links)
     return {"short_link": f"/{short_key}"}
 
-@app.post("/shorten_emoji")
+@app.post("/shorten_emoji", response_class=ORJSONResponse)
 async def shorten_emoji_link(link: Link):
     original_url = link.url
 
@@ -145,9 +145,3 @@ async def shorten_emoji_link(link: Link):
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=1111)
-
-# 코체 바보
