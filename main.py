@@ -4,17 +4,14 @@ from fastapi.templating import *
 from fastapi.middleware.cors import *
 from pydantic import *
 from typing import *
+from function import *
 from schema import *
-import json
-import random
-import string
+from redis.commands.json.path import Path
 import base64
 
+nest_asyncio.apply()
+
 app = FastAPI(title="sqlr.kr", description="sqlr.kr 은 링크단축 서비스 입니다.", version="a2.0.0")
-
-from api.v1 import shorten
-
-app.include_router(shorten.router)
 
 origins = [
     "http://sqlr.kr:3000",
@@ -35,113 +32,60 @@ app.add_middleware(
 # Jinja2 템플릿 설정
 templates = Jinja2Templates(directory="templates")
 
-# JSON 파일 이름
-json_filename = "short_links.json"
-
-# JSON 파일에서 데이터 로드
-def load_short_links():
-    try:
-        with open(json_filename, "r") as file:
-            data = json.load(file)
-            # 'invisible' 속성이 누락된 경우 기본값 False로 추가
-            for key, value in data.items():
-                if 'invisible' not in value:
-                    value['invisible'] = False
-            return data
-    except FileNotFoundError:
-        return {}
-
-# JSON 파일에 데이터 저장
-def save_short_links(links):
-    with open(json_filename, "w") as file:
-        # JSON 파일에 데이터를 문자열로 저장
-        json.dump(links, file, indent=4)
-
-# 단축 링크를 저장할 딕셔너리
-short_links = load_short_links()
-
-# 단축 링크 생성
-def generate_short_link():
-    letters = string.ascii_letters
-    while True:
-        short_key = ''.join(random.choice(letters) for _ in range(4))
-        if short_key not in short_links:
-            return short_key
-
-emoji_list = [
-    "😀", "😍", "🌟", "🔥", "👍", "✨", "🚀", "💡", "🎉", "❤️",
-    "🐱", "🐶", "🐦", "🐠", "🌻", "🌈", "🍔", "🍕", "🍦", "🍭",
-    "✈️", "🔗", "🗄️", "✏️", "👀", "📜", "🩷", "💕", "🍎", "🥕"
-]
-
-# Emoji로 단축 키 생성
-def generate_emoji_short_key():
-    while True:
-        emoji_key = ''.join(random.choice(emoji_list) for _ in range(4))
-        if emoji_key not in short_links:
-            return emoji_key
-
-@app.get("/list", response_class=HTMLResponse)
-async def list(request: Request):
-    # 'invisible' 값이 False인 링크의 URL만 표시
-    visible_links = {key: value['url'] for key, value in short_links.items() if value.get('invisible', False) is False}
-    return templates.TemplateResponse("list.html", {"request": request, "short_links": visible_links})
-
-@app.get("/{short_key}")
-async def redirect_to_original(short_key: str):
-    if short_key in short_links:
-        url = short_links[short_key]['url']
-        return RedirectResponse(url)  # 원래 URL로 리디렉션
-    else:
-        raise HTTPException(status_code=404, detail="Short link not found")
-
-# 단축 링크 생성 API
-@app.post("/shorten", response_class=ORJSONResponse)
-async def shorten_link(link: Link):
-    original_url = link.url
-
-    # 이미 단축된 링크인지 확인
-    for key, value in short_links.items():
-        if value['url'] == original_url:
-            return {"short_link": f"/{key}"}
-
-    # 단축 링크 생성
-    short_key = generate_short_link()
-    short_links[short_key] = {
-        'url': original_url,
-        'base': link.base,
-        'invisible': link.invisible
-    }
-
-    if link.base:
-        short_links[short_key]['url'] = base64.b64encode(original_url.encode()).decode()
-
-    save_short_links(short_links)
-    return {"short_link": f"/{short_key}"}
-
-@app.post("/shorten_emoji", response_class=ORJSONResponse)
-async def shorten_emoji_link(link: Link):
-    original_url = link.url
-
-    # 이미 단축된 링크인지 확인
-    for key, value in short_links.items():
-        if value['url'] == original_url:
-            return {"emoji_short_link": f"/{key}"}
-
-    # 단축 링크 생성
-    emoji_short_key = generate_emoji_short_key()
-    short_links[emoji_short_key] = {
-        'url': original_url,
-        'base': link.base,
-        'invisible': link.invisible
-    }
-
-    if link.base:
-        short_links[emoji_short_key]['url'] = base64.b64encode(original_url.encode()).decode()
-
-    save_short_links(short_links)
-    return {"emoji_short_link": f"/{emoji_short_key}"}
-
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.post("/shorten", response_class=ORJSONResponse)
+async def shorten_link(body: Link):
+    key = await anext(generate_key())
+    
+    url_hash = base64.b85encode(body.url.encode())
+
+    if body.password == None:
+        hgQs = {"url": url_hash.hex()}
+    else:
+        salt, password_hash = security(body.password).hash_new_password()
+        hgQs = {"url": url_hash.hex(), "salt": salt.hex(), "password_hash": password_hash.hex()}
+
+    db = redis.Redis(connection_pool=pool())
+    await db.json().set(key, Path.root_path(), hgQs)
+    await db.close()
+
+    return {"short_link": f"https://sqlr.kr/{key}"}
+
+@app.post("/shorten_emoji", response_class=ORJSONResponse)
+async def shorten_emoji_link(body: Link):
+    key = await anext(generate_emoji_key())
+    
+    url_hash = base64.b85encode(body.url.encode())
+
+    if body.password == None:
+        hgQs = {"url": url_hash.hex()}
+    else:
+        salt, password_hash = security(body.password).hash_new_password()
+        hgQs = {"url": url_hash.hex(), "salt": salt.hex(), "password_hash": password_hash.hex()}
+
+    db = redis.Redis(connection_pool=pool())
+    await db.json().set(key, Path.root_path(), hgQs)
+    await db.close()
+
+    return {"short_link": f"https://sqlr.kr/{key}"}
+
+@app.get("/{short_key}")
+async def redirect_to_original(body: KP):
+    db_c = redis.Redis(connection_pool=pool())
+    db = await db_c.json().jsonget(body.key, Path.root_path())
+    await db_c.close()
+    url = bytes.fromhex(db["url"]).decode("utf-8")
+    url = base64.b85decode(url).decode("utf-8")
+
+    try:
+        salt = bytes.fromhex(db["salt"])
+        password_hash = bytes.fromhex(db["password_hash"])
+
+        if security(body.password, salt, password_hash).is_correct_password():
+            return RedirectResponse(url)
+
+    except:
+        raise HTTPException(status_code=401, detail="Password required or incorrect")
