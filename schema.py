@@ -7,4 +7,4 @@ class Link(BaseModel):
 
 #key and password
 class Password(BaseModel):
-    password: Union[str, None] = None
+    password: str
