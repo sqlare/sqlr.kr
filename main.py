@@ -36,7 +36,7 @@ async def root(request: Request):
 
 @app.post("/shorten", response_class=ORJSONResponse)
 async def shorten_link(body: Link):
-    key = ''.join(generate_key())
+    key = generate_key()
     
     url_hash = base64.b85encode(body.url.encode())
 
