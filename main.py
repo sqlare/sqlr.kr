@@ -71,9 +71,9 @@ async def shorten_emoji_link(body: Link):
     return {"short_link": f"https://sqlr.kr/{key}"}
 
 @app.get("/{short_key}")
-async def redirect_to_original(body: KP):
+async def redirect_to_original(short_key: str, body: Password):
     db_c = redis.Redis(connection_pool=pool())
-    db = await db_c.json().jsonget(body.key, Path.root_path())
+    db = await db_c.json().jsonget(short_key, Path.root_path())
     await db_c.close()
     url = bytes.fromhex(db["url"]).decode("utf-8")
     url = base64.b85decode(url).decode("utf-8")

@@ -6,6 +6,5 @@ class Link(BaseModel):
     password: Union[str, None] = None
 
 #key and password
-class KP(BaseModel):
-    key: str
+class Password(BaseModel):
     password: Union[str, None] = None
