@@ -80,13 +80,7 @@ def generate_emoji_short_key():
         emoji_key = ''.join(random.choice(emoji_list) for _ in range(4))
         if emoji_key not in short_links:
             return emoji_key
-
-@app.get("/list", response_class=HTMLResponse)
-async def list(request: Request):
-    # 'invisible' 값이 False인 링크의 URL만 표시
-    visible_links = {key: value['url'] for key, value in short_links.items() if value.get('invisible', False) is False}
-    return templates.TemplateResponse("list.html", {"request": request, "short_links": visible_links})
-
+        
 @app.get("/{short_key}")
 async def redirect_to_original(short_key: str):
     if short_key in short_links:
