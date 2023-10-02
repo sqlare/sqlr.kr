@@ -34,7 +34,8 @@ class security():
         return hmac.compare_digest(self.password_hash, hashlib.pbkdf2_hmac(self.algorithm, self.password, self.salt, self.iterations, self.dklen))
 
 async def generate_key(length: int = 4) -> AsyncGenerator:
-    for _ in range(length):
+    bo: bool = True
+    while bo:
         key = ''.join(random.choice(string.ascii_letters) for _ in range(length))
 
         db = redis.Redis(connection_pool=pool())
@@ -45,7 +46,9 @@ async def generate_key(length: int = 4) -> AsyncGenerator:
             length += 1
         else:
             yield key
+            bo = False
             break
+        
 
 async def generate_emoji_key(length: int = 4) -> AsyncGenerator:
     while True:
