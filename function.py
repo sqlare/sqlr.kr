@@ -43,8 +43,10 @@ async def generate_key(length: int = 4) -> AsyncGenerator:
         await db.close()
 
         if db_key == None:
+            print(db_key)
             length += 1
         else:
+            print("............." + db_key)
             yield key
             bo = False
             break
