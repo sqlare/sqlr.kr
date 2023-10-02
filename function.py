@@ -33,16 +33,16 @@ class security():
     def is_correct_password(self) -> bool:
         return hmac.compare_digest(self.password_hash, hashlib.pbkdf2_hmac(self.algorithm, self.password, self.salt, self.iterations, self.dklen))
 
-async def generate_key(length: int = 4) -> str:
+def generate_key(length: int = 4) -> str:
     key = ''.join(random.choice(string.ascii_letters) for _ in range(length))
 
     try:
         db = redis.Redis(connection_pool=pool())
-        await db.json().get(key)
-        await db.close()
+        db.json().get(key)
+        db.close()
         length + 1
     except:
-        await db.close()
+        db.close()
         return key
 
 
