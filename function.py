@@ -15,7 +15,7 @@ for _ in emoji_data:
     emoji_list.append(_[0])
 
 def get_metadata(url: str):
-    metadata = metadata_parser.MetadataParser(url, search_head_only=False)
+    metadata = metadata_parser.MetadataParser(url, search_head_only=False, requests_timeout=10)
     return metadata.metadata
 
 def pool():
