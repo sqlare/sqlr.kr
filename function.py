@@ -49,6 +49,7 @@ async def generate_key(length: int = 4) -> AsyncGenerator:
             __length__ += 1
 
 async def generate_emoji_key(length: int = 4) -> AsyncGenerator:
+    __length__ = length
     while True:
         key = ''.join(random.choice(emoji_list) for _ in range(length))
 
