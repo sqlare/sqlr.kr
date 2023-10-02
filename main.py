@@ -72,10 +72,10 @@ async def shorten_emoji_link(body: Link):
 
 @app.post("/{short_key}")
 async def redirect_to_original(short_key: str, body: Union[Password, None] = None):
-    print(short_key)
     db_c = redis.Redis(connection_pool=pool())
     db = await db_c.json().jsonget(short_key, Path.root_path())
     await db_c.close()
+    print(db)
     url = bytes.fromhex(db["url"]).decode("utf-8")
     url = base64.b85decode(url).decode("utf-8")
 
