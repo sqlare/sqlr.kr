@@ -35,7 +35,7 @@ class security():
 
 async def generate_key(length: int = 4) -> AsyncGenerator:
     key = ''.join(random.choice(string.ascii_letters) for _ in range(length))
-    
+
     try:
         db = redis.Redis(connection_pool=pool())
         await db.json().get(key)
@@ -44,6 +44,7 @@ async def generate_key(length: int = 4) -> AsyncGenerator:
     except:
         await db.close()
         yield key
+        raise StopAsyncIteration
 
 
 async def generate_emoji_key(length: int = 4) -> AsyncGenerator:
@@ -57,4 +58,5 @@ async def generate_emoji_key(length: int = 4) -> AsyncGenerator:
     except:
         await db.close()
         yield key
+        raise StopAsyncIteration
 
