@@ -5,10 +5,7 @@ import hashlib
 import hmac
 import redis.asyncio as redis
 import secrets
-import nest_asyncio
 import emoji
-
-nest_asyncio.apply()
 
 emoji_data = emoji.EMOJI_DATA
 emoji_data = emoji_data.items()
