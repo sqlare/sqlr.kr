@@ -34,7 +34,6 @@ class security():
         return hmac.compare_digest(self.password_hash, hashlib.pbkdf2_hmac(self.algorithm, self.password, self.salt, self.iterations, self.dklen))
 
 async def generate_key(length: int = 4) -> AsyncGenerator:
-    while True:
         key = ''.join(random.choice(string.ascii_letters) for _ in range(length))
 
         try:
@@ -45,10 +44,9 @@ async def generate_key(length: int = 4) -> AsyncGenerator:
         except:
             await db.close()
             yield key
-            break
+
 
 async def generate_emoji_key(length: int = 4) -> AsyncGenerator:
-    while True:
         key = ''.join(random.choice(emoji_list) for _ in range(length))
 
         try:
@@ -59,4 +57,4 @@ async def generate_emoji_key(length: int = 4) -> AsyncGenerator:
         except:
             await db.close()
             yield key
-            break
+
