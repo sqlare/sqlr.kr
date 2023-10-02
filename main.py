@@ -9,7 +9,7 @@ from schema import *
 from redis.commands.json.path import Path
 import base64
 
-app = FastAPI(title="sqlr.kr", description="sqlr.kr 은 링크단축 서비스 입니다.", version="a2.0.0")
+app = FastAPI(title="sqlr.kr", description="sqlr.kr 은 링크단축 서비스 입니다.", version="a2.1.0")
 
 origins = [
     "http://sqlr.kr:3000",
