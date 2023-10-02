@@ -1,3 +1,5 @@
 fastapi[all]
 redis
 nest_asyncio
+lxml
+metadata_parser
