@@ -34,34 +34,30 @@ class security():
         return hmac.compare_digest(self.password_hash, hashlib.pbkdf2_hmac(self.algorithm, self.password, self.salt, self.iterations, self.dklen))
 
 async def generate_key(length: int = 4) -> AsyncGenerator:
-    bo: bool = True
-    while bo:
-        key = ''.join(random.choice(string.ascii_letters) for _ in range(length))
+    __length__ = length
+    while True:
+        key = ''.join(random.choice(string.ascii_letters) for _ in range(__length__))
 
         db = redis.Redis(connection_pool=pool())
         db_key = await db.json().get(key)
         await db.close()
 
         if db_key == None:
-            print(db_key)
-            length += 1
-        else:
-            print("............." + db_key)
             yield key
-            bo = False
             break
-        
+        else:
+            __length__ += 1
 
 async def generate_emoji_key(length: int = 4) -> AsyncGenerator:
     while True:
         key = ''.join(random.choice(emoji_list) for _ in range(length))
 
-        try:
-            db = redis.Redis(connection_pool=pool())
-            await db.json().get(key)
-            await db.close()
-            length + 1
-        except:
-            await db.close()
+        db = redis.Redis(connection_pool=pool())
+        db_key = await db.json().get(key)
+        await db.close()
+
+        if db_key == None:
             yield key
             break
+        else:
+            __length__ += 1
