@@ -33,7 +33,7 @@ class security():
     def is_correct_password(self) -> bool:
         return hmac.compare_digest(self.password_hash, hashlib.pbkdf2_hmac(self.algorithm, self.password, self.salt, self.iterations, self.dklen))
 
-async def generate_key(length: int = 4) -> AsyncGenerator:
+async def generate_key(length: int = 4) -> str:
     key = ''.join(random.choice(string.ascii_letters) for _ in range(length))
 
     try:
@@ -43,10 +43,10 @@ async def generate_key(length: int = 4) -> AsyncGenerator:
         length + 1
     except:
         await db.close()
-        yield key
+        return key
 
 
-async def generate_emoji_key(length: int = 4) -> AsyncGenerator:
+async def generate_emoji_key(length: int = 4) -> str:
     key = ''.join(random.choice(emoji_list) for _ in range(length))
 
     try:
@@ -56,5 +56,5 @@ async def generate_emoji_key(length: int = 4) -> AsyncGenerator:
         length + 1
     except:
         await db.close()
-        yield key
+        return key
 
