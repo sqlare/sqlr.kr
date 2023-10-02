@@ -34,7 +34,7 @@ class security():
         return hmac.compare_digest(self.password_hash, hashlib.pbkdf2_hmac(self.algorithm, self.password, self.salt, self.iterations, self.dklen))
 
 async def generate_key(length: int = 4) -> AsyncGenerator:
-    while True:
+    for _ in range(length):
         key = ''.join(random.choice(string.ascii_letters) for _ in range(length))
 
         db = redis.Redis(connection_pool=pool())
