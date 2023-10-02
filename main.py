@@ -36,7 +36,7 @@ async def root(request: Request):
 
 @app.post("/shorten", response_class=ORJSONResponse)
 async def shorten_link(body: Link):
-    key = await generate_key()
+    key = generate_key()
     
     url_hash = base64.b85encode(body.url.encode())
 
@@ -54,7 +54,7 @@ async def shorten_link(body: Link):
 
 @app.post("/shorten_emoji", response_class=ORJSONResponse)
 async def shorten_emoji_link(body: Link):
-    key = await generate_emoji_key()
+    key = generate_emoji_key()
     
     url_hash = base64.b85encode(body.url.encode())
 
