@@ -6,12 +6,17 @@ import hmac
 import redis.asyncio as redis
 import secrets
 import emoji
+import metadata_parser
 
 emoji_data = emoji.EMOJI_DATA
 emoji_data = emoji_data.items()
 emoji_list = list()
 for _ in emoji_data:
     emoji_list.append(_[0])
+
+def get_metadata(url: str):
+    metadata = metadata_parser.MetadataParser(url, search_head_only=False)
+    return metadata.metadata
 
 def pool():
     return redis.ConnectionPool(host='localhost', port=6379, db=0)
