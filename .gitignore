@@ -162,3 +162,4 @@ cython_debug/
 short_links.json
 
 # 코체 바보
+link.db
