@@ -74,3 +74,5 @@ async def generate_emoji_key(url: str, length: int = 4) -> AsyncGenerator:
             db.insert_key(key, url)  # URL을 값으로 설정
         else:
             length += 1
+
+# 코체 멍청이
