@@ -14,7 +14,7 @@ from function import Database, Security, get_metadata, generate_key, generate_em
 app = FastAPI(
     title="sqlr.kr",
     description="sqlr.kr is a URL shortening service.",
-    version="a2.1.0",
+    version="a3.0.0",
 )
 
 origins = [
