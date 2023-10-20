@@ -111,3 +111,4 @@ async def metadata_from_short_link(short_key: str):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=1111)
+# 코체 멍청이
