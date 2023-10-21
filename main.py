@@ -78,7 +78,7 @@ async def shorten_emoji_link(body: Link):
     return {"short_link": f"https://sqlr.kr/{key}"}
     
 @app.get("/{short_key}")
-async def redirect_to_original(short_key: str):
+async def redirect_to_original(short_key: str, request: Request):
     conn = connect('link.db')
     c = conn.cursor()
     c.execute("SELECT value FROM keys WHERE key = ?", (short_key,))
@@ -89,8 +89,8 @@ async def redirect_to_original(short_key: str):
         url = result[0]
         return RedirectResponse(url)
     else:
-        # 404 에러 페이지 표시
-        return templates.TemplateResponse("404.html", {}, status_code=404)
+        # 404 에러 페이지 표시 (context에 "request" 키 포함)
+        return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
 
 def get_metadata_from_original(url: str):
     metadata = get_metadata(url)
