@@ -76,7 +76,7 @@ async def shorten_emoji_link(body: Link):
     conn.close()
 
     return {"short_link": f"https://sqlr.kr/{key}"}
-
+    
 @app.get("/{short_key}")
 async def redirect_to_original(short_key: str):
     conn = connect('link.db')
@@ -88,6 +88,9 @@ async def redirect_to_original(short_key: str):
     if result:
         url = result[0]
         return RedirectResponse(url)
+    else:
+        # 404 에러 페이지 표시
+        return templates.TemplateResponse("404.html", status_code=404)
 
 def get_metadata_from_original(url: str):
     metadata = get_metadata(url)
