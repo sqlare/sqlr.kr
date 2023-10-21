@@ -90,7 +90,7 @@ async def redirect_to_original(short_key: str):
         return RedirectResponse(url)
     else:
         # 404 에러 페이지 표시
-        return templates.TemplateResponse("404.html", status_code=404)
+        return templates.TemplateResponse("404.html", {}, status_code=404)
 
 def get_metadata_from_original(url: str):
     metadata = get_metadata(url)
