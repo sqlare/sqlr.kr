@@ -54,7 +54,18 @@ def get_metadata(url: str):
     return metadata.metadata
 
 async def generate_key(url: str, length: int = 4) -> AsyncGenerator:
-    db = Database('eng.db')  # Database for English keys
+    db = Database('link.db')
+    while True:
+        key = ''.join(random.choice(string.ascii_letters) for _ in range(length))
+
+        if not db.check_key_exists(key):
+            yield key, url
+            db.insert_key(key, url)  # URL을 값으로 설정
+        else:
+            length += 1
+
+async def generate_donate(url: str, length: int = 4) -> AsyncGenerator:
+    db = Database('link.db')
     while True:
         key = ''.join(random.choice(string.ascii_letters) for _ in range(length))
 
