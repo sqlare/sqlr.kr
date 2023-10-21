@@ -9,7 +9,7 @@ import emoji
 import metadata_parser
 import sqlite3
 from sqlite3 import *
-from function import Database, Security, get_metadata, generate_key, generate_emoji_key
+from function import get_metadata, generate_key, generate_emoji_key, generate_donate
 
 app = FastAPI(
     title="sqlr.kr",
@@ -51,6 +51,29 @@ c.execute('''
 conn.commit()
 conn.close()
 
+conn = sqlite3.connect('donate.db')
+c = conn.cursor()
+c.execute('''
+    CREATE TABLE IF NOT EXISTS keys (
+        key TEXT PRIMARY KEY,
+        value TEXT
+    )
+''')
+conn.commit()
+conn.close()
+
+
+conn = sqlite3.connect('emoji.db')
+c = conn.cursor()
+c.execute('''
+    CREATE TABLE IF NOT EXISTS keys (
+        key TEXT PRIMARY KEY,
+        value TEXT
+    )
+''')
+conn.commit()
+conn.close()
+
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -66,17 +89,44 @@ async def shorten_link(body: Link):
 
         return {"short_link": f"https://sqlr.kr/{key}"}
 
+@app.post("/shorten_donate", response_class=ORJSONResponse)
+async def shorten_donate(body: Link):
+    async for key, url in generate_donate(body.url):
+        conn = sqlite3.connect('donate.db')
+        c = conn.cursor()
+        c.execute("INSERT INTO keys (key, value) VALUES (?, ?)", (key, url))
+        conn.commit()
+        conn.close()
+
+        return {"short_link": f"https://sqlr.kr/d/{key}"}
+
 @app.post("/shorten_emoji", response_class=ORJSONResponse)
 async def shorten_emoji_link(body: Link):
     key = next(generate_emoji_key(body.url))
-    conn = connect('link.db')
+    conn = connect('emoji.db')
     c = conn.cursor()
     c.execute("INSERT INTO keys (key, value) VALUES (?, ?)", (key, body.url))
     conn.commit()
     conn.close()
 
     return {"short_link": f"https://sqlr.kr/{key}"}
-    
+
+@app.get("/d/{short_key}")
+async def redirect_to_original(short_key: str, request: Request):
+    conn = connect('donate.db')
+    c = conn.cursor()
+    c.execute("SELECT value FROM keys WHERE key = ?", (short_key,))
+    result = c.fetchone()
+    conn.close()
+
+    if result:
+        url = result[0]
+        return RedirectResponse(url)
+    else:
+        # 404 에러 페이지 표시 (context에 "request" 키 포함)
+        return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
+
+
 @app.get("/{short_key}")
 async def redirect_to_original(short_key: str, request: Request):
     conn = connect('link.db')
