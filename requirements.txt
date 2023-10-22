@@ -3,3 +3,4 @@ redis
 nest_asyncio
 lxml
 metadata_parser
+emoji
