@@ -184,20 +184,22 @@
         }
     </style>
     <meta name="description" content="링크를 더 짧게, sqlr.kr">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale: 1.0">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7353828009482002"
         crossorigin="anonymous"></script>
 </head>
+
 <body>
     <header>
         <a href="https://sqlr.kr"><h1>sqlr.kr</h1></a>
     </header>
     <main>
         <h1><a id="short-link-url" href="">sqlr.kr</a></h1>
+        <div id="url-validation-message"></div>
         <form action="/shorten" method="post">
             <label for="url">URL</label>
             <input type="url" name="url" id="url" placeholder="https://example.com">
-            <button type="submit">단축하기 🚀</button>
+            <button type="submit" id="shorten-button" disabled>단축하기 🚀</button>
             <br /><br />
             <div id="qr-code-container"></div>
         </form>
@@ -239,7 +241,7 @@
                 previousURL = shortenedURL;
             } else {
                 // Handle error
-                qrCodeContainer.style.display = 'none'; // Hide QR code container on error
+                qrCodeContainer.style = display = 'none'; // Hide QR code container on error
                 alert('QR 코드를 생성하는 동안 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
             }
         };
@@ -250,6 +252,16 @@
     
             // Get the URL input value
             const url = form.querySelector('#url').value;
+    
+            // Regular expression to validate URLs
+            
+            // Check if the URL is valid using the regex
+            if (!url.match(urlRegex)) {
+                document.getElementById('url-validation-message').textContent = '유효한 URL이 아닙니다.';
+                return;
+            } else {
+                document.getElementById('url-validation-message').textContent = '';
+            }
     
             // Make a POST request to your FastAPI endpoint
             const response = await fetch('/shorten', {
@@ -279,6 +291,13 @@
                 qrCodeContainer.style.display = 'none'; // Hide QR code container on error
                 alert('URL을 줄이는 동안 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
             }
+        });
+        const urlRegex = /^(https?|http):\/\/[^\s/$.?#].[^\s]*$/i;
+
+        // Add an input event listener to enable/disable the "단축하기" button based on URL input
+        form.querySelector('#url').addEventListener('input', () => {
+            const isValidURL = form.querySelector('#url').value.match(urlRegex);
+            form.querySelector('#shorten-button').disabled = !isValidURL;
         });
     </script>    
 </body>

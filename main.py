@@ -22,11 +22,7 @@ app = FastAPI(
 )
 
 origins = [
-    "http://sqlr.kr:3000",
-    "http://sqlr.kr",
-    "https://sqlr.kr",
-    "http://localhost",
-    "http://localhost:3000",
+    "*"
 ]
 
 app.add_middleware(
