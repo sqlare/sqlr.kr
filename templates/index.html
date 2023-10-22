@@ -201,6 +201,9 @@
         const shortLinkDiv = document.getElementById('short-link');
         const shortLinkUrl = document.getElementById('short-link-url');
     
+        // Get the QR code container
+        const qrCodeContainer = document.getElementById('qr-code-container');
+    
         // Add an event listener for the form submission
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -219,26 +222,29 @@
     
             if (response.ok) {
                 const data = await response.json();
-                
+    
                 // Display the shortened URL
                 const shortenedURL = data.short_link;
                 shortLinkUrl.href = shortenedURL;
                 shortLinkUrl.textContent = shortenedURL.replace('https://', ''); // Remove 'https://'
-                shortLinkDiv.style.display = 'block';
+    
+                // Show the QR code container
+                qrCodeContainer.style.display = 'block';
     
                 // Generate and display the QR code
                 const qrCodeResponse = await fetch(`/generate_qr_code/${encodeURIComponent(shortenedURL)}`);
                 if (qrCodeResponse.ok) {
                     const qrCodeData = await qrCodeResponse.text();
                     // Add the QR code to the HTML
-                    document.getElementById('qr-code-container').innerHTML = qrCodeData;
+                    qrCodeContainer.innerHTML = qrCodeData;
                 }
             } else {
                 // Handle error
                 shortLinkDiv.style.display = 'none';
+                qrCodeContainer.style.display = 'none'; // Hide QR code container on error
                 alert('Failed to shorten URL.');
             }
         });
-    </script>
+    </script>    
 </body>
 </html>
