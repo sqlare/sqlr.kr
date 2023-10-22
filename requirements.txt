@@ -3,3 +3,5 @@ nest_asyncio
 lxml
 metadata_parser
 emoji
+qrcode
+pillow

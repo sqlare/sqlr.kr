@@ -4,8 +4,9 @@
 <head>
     <title>🔗 ➡️ 💨</title>
     <style>
+        @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css");
         body {
-            font-family: Arial, sans-serif;
+            font-family: Pretendard;
             background-color: #141923;
             margin: 0;
             padding: 0;
@@ -20,7 +21,7 @@
 
         header {
             width: 100vw;
-            heigth: 10%;
+            height: 10%;
             flex: 1;
             color: white;
             margin: 0;
@@ -33,8 +34,10 @@
         }
 
         header h1 {
+            font-weight: 900;
             width: 20%;
             margin-left: 20px;
+            font-size: 20pt;
         }
 
         header ul {
@@ -45,7 +48,7 @@
             align-items: center;
             justify-content: right;
             margin-left: 10px;
-            margin-right: 10px;
+            margin-right: 20px;
         }
 
         header ul li {
@@ -77,22 +80,6 @@
         h1 a {
             text-align: center;
             color: #fff;
-        }
-
-        form {
-            color: white;
-            text-align: center;
-            width: 40%;
-            height: 25%;
-            /* Change to auto for dynamic height */
-            padding: 20px;
-            background-color: #252B38;
-            border-radius: 10px;
-            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
         }
 
         label {
@@ -160,45 +147,88 @@
             color: white;
             margin: 10px 0;
         }
-
-        a {
-            color: #007bff;
-            text-decoration: none;
+        a h1 {
+            color: #fff;
         }
 
+        a {
+            color: #fff !important; /* 텍스트 색상을 하얀색(#fff)으로 설정 */
+            text-decoration: none; /* 밑줄 제거 (선택사항) */
+        }
+        
         a:hover {
-            text-decoration: underline;
+            text-decoration: underline; /* 호버 시에 밑줄 추가 (선택사항) */
+        }
+
+        label {
+            color:white;
         }
 
         @media (max-width: 768px) {
             header h1 {
                 font-size: 14pt;
             }
-
-            /* Add mobile-specific styles here */
-            form {
-                width: 100%;
-                /* Make the form full width on smaller screens */
-            }
         }
+        @media (min-width: 769px) {
+            body {
+                font-size: 130%;
+            }
+        } 
     </style>
-    <meta name="description" content="링크도 API로, sqlr">
+    <meta name="description" content="링크를 더 짧게, sqlr.kr">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7353828009482002"
         crossorigin="anonymous"></script>
 </head>
 <body>
     <header>
-        <h1><a href="https://sqlr.kr">🔗 ➡️ 💨</a></h1>
-        <ul>
-            <li><a href="https://sqlr.kr">Main</a></li>
-        </ul>
+        <a href="https://sqlr.kr"><h1>sqlr.kr</h1></a>
     </header>
     <main>
-        <h1>????.??.??</h1>
+        <h1><a id="short-link-url" href="">sqlr.kr</a></h1>
+        <form action="/shorten" method="post">
+            <label for="url">URL</label>
+            <input type="url" name="url" id="url" placeholder="https://example.com">
+            <button type="submit">단축하기 🚀</button>
+        </form>
     </main>
+    <script>
+        // Get the form element
+        const form = document.querySelector('form');
+    
+        // Get the elements for displaying the shortened URL
+        const shortLinkDiv = document.getElementById('short-link');
+        const shortLinkUrl = document.getElementById('short-link-url');
+    
+        // Add an event listener for the form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+    
+            // Get the URL input value
+            const url = form.querySelector('#url').value;
+    
+            // Make a POST request to your FastAPI endpoint
+            const response = await fetch('/shorten', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url }),
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                // Display the shortened URL
+                shortLinkUrl.href = data.short_link;
+                shortLinkUrl.textContent = data.short_link.replace('https://', ''); // Remove 'https://'
+                shortLinkDiv.style.display = 'block';
+            } else {
+                // Handle error
+                shortLinkDiv.style.display = 'none';
+                alert('Failed to shorten URL.');
+            }
+        });
+    </script>
+    
 </body>
-
 </html>
-
-<!-- 코체 바보 -->
