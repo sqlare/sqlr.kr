@@ -1,25 +1,23 @@
 from typing import *
+from variable import *
 import random
 import string
 import hashlib
 import hmac
 import redis.asyncio as redis
 import secrets
-import emoji
 import metadata_parser
+import qrcode
+import io
 
-emoji_data = emoji.EMOJI_DATA
-emoji_data = emoji_data.items()
-emoji_list = list()
-for _ in emoji_data:
-    emoji_list.append(_[0])
+def pool(db_num: int = 0):
+    return redis.ConnectionPool().from_url(f"{DB}/{db_num}")
 
-def get_metadata(url: str):
-    metadata = metadata_parser.MetadataParser(url, search_head_only=False, requests_timeout=10)
-    return metadata.metadata
+def HTTP_404(request: object):
+    return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
 
-def pool():
-    return redis.ConnectionPool(host='localhost', port=6379, db=0)
+def HTTP_401(request: object):
+    return templates.TemplateResponse("401.html", {"request": request}, status_code=401)
 
 class security():
     def __init__(self, password: str, salt: bytes = None, password_hash: bytes = None, algorithm: str = 'sha3_256', iterations: int = 100000, dklen: Union[int, None] = None) -> None:
@@ -37,6 +35,10 @@ class security():
 
     def is_correct_password(self) -> bool:
         return hmac.compare_digest(self.password_hash, hashlib.pbkdf2_hmac(self.algorithm, self.password, self.salt, self.iterations, self.dklen))
+
+def get_metadata(url: str):
+    metadata = metadata_parser.MetadataParser(url, search_head_only=False, requests_timeout=10)
+    return metadata.metadata
 
 async def generate_key(length: int = 4) -> AsyncGenerator:
     __length__ = length
@@ -67,3 +69,11 @@ async def generate_emoji_key(length: int = 4) -> AsyncGenerator:
             break
         else:
             __length__ += 1
+
+def generate_qr_code_image(data: str):
+    img = qrcode.make(data)
+    img_byte_array = io.BytesIO()
+    img.save(img_byte_array)
+    img_byte_array.seek(0)
+
+    return img_byte_array
