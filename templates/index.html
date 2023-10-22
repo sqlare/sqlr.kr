@@ -197,21 +197,21 @@
     <script>
         // Get the form element
         const form = document.querySelector('form');
-
+    
         // Get the elements for displaying the shortened URL
         const shortLinkDiv = document.getElementById('short-link');
         const shortLinkUrl = document.getElementById('short-link-url');
-
+    
         // Get the QR code container
         const qrCodeContainer = document.getElementById('qr-code-container');
-
+    
         // Add an event listener for the form submission
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-
+    
             // Get the URL input value
             const url = form.querySelector('#url').value;
-
+    
             // Make a POST request to your FastAPI endpoint
             const response = await fetch('/shorten', {
                 method: 'POST',
@@ -220,21 +220,20 @@
                 },
                 body: JSON.stringify({ url }),
             });
-
+    
             if (response.ok) {
                 const data = await response.json();
-
+    
                 // Display the shortened URL
                 const shortenedURL = data.short_link;
                 shortLinkUrl.href = shortenedURL;
                 shortLinkUrl.textContent = shortenedURL.replace('https://', ''); // Remove 'https://'
-
+    
                 // Show the QR code container
                 qrCodeContainer.style.display = 'block';
-
+    
                 // Generate and display the QR code
-                shortLinkUrl.textContent = shortenedURL.replace('sqlr.kr/', ''); // Remove 'https://'
-                const qrCodeResponse = await fetch(`/generate_qr_code/${encodeURIComponent(shortenedURL)}`);
+                const qrCodeResponse = await fetch(`/generate_qr_code/${encodeURIComponent(shortenedURL.replace('https://sqlr.kr/', ''))}`);
                 if (qrCodeResponse.ok) {
                     const qrCodeData = await qrCodeResponse.text();
                     // Add the QR code to the HTML
