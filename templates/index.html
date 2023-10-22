@@ -218,10 +218,20 @@
     
             if (response.ok) {
                 const data = await response.json();
+                
                 // Display the shortened URL
-                shortLinkUrl.href = data.short_link;
-                shortLinkUrl.textContent = data.short_link.replace('https://', ''); // Remove 'https://'
+                const shortenedURL = data.short_link;
+                shortLinkUrl.href = shortenedURL;
+                shortLinkUrl.textContent = shortenedURL.replace('https://', ''); // Remove 'https://'
                 shortLinkDiv.style.display = 'block';
+    
+                // Generate and display the QR code
+                const qrCodeResponse = await fetch(`/generate_qr_code/${shortenedURL}`);
+                if (qrCodeResponse.ok) {
+                    const qrCodeData = await qrCodeResponse.text();
+                    // Add the QR code to the HTML
+                    document.getElementById('qr-code-container').innerHTML = qrCodeData;
+                }
             } else {
                 // Handle error
                 shortLinkDiv.style.display = 'none';
@@ -229,6 +239,5 @@
             }
         });
     </script>
-    
 </body>
 </html>

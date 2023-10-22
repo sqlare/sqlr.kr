@@ -18,7 +18,7 @@ import base64
 app = FastAPI(
     title="sqlr.kr",
     description="sqlr.kr is a URL shortening service.",
-    version="a3.0.0",
+    version="a3.1.0",
 )
 
 origins = [
