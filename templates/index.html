@@ -233,6 +233,7 @@
                 qrCodeContainer.style.display = 'block';
 
                 // Generate and display the QR code
+                shortLinkUrl.textContent = shortenedURL.replace('sqlr.kr/', ''); // Remove 'https://'
                 const qrCodeResponse = await fetch(`/generate_qr_code/${encodeURIComponent(shortenedURL)}`);
                 if (qrCodeResponse.ok) {
                     const qrCodeData = await qrCodeResponse.text();
