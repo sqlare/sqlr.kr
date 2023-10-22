@@ -211,18 +211,11 @@
     
         // Get the QR code container
         const qrCodeContainer = document.getElementById('qr-code-container');
-    
-        let previousURL = ''; // Variable to store the previous URL
+        
+        let currentURL = ''; // Variable to store the current URL
     
         // Function to update the QR code
         const updateQRCode = async (url) => {
-            // Check if the URL is the same as the previous one
-            if (url === previousURL) {
-                // Display an alert if the URL is the same
-                alert('같은 링크는 생성할 수 없습니다.');
-                return;
-            }
-    
             // Generate and display the QR code
             const qrCodeResponse = await fetch(`/generate_qr_code/${encodeURIComponent(url)}`);
             if (qrCodeResponse.ok) {
@@ -231,14 +224,13 @@
                 qrCodeContainer.innerHTML = '';
                 // Add the new QR code to the HTML
                 qrCodeContainer.innerHTML = qrCodeData;
-                // Update the previous URL
-                previousURL = url;
+                currentURL = url; // Update the current URL
             } else {
                 // Handle error
                 qrCodeContainer.style.display = 'none'; // Hide QR code container on error
-                alert('QR 코드를 생성하는 동안 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                alert('QR 코드를 생성하는 중에 오류가 발생했습니다. 다시 시도해 주세요.');
             }
-        };
+        }
     
         // Add an event listener for the form submission
         form.addEventListener('submit', async (e) => {
@@ -246,6 +238,12 @@
     
             // Get the URL input value
             const url = form.querySelector('#url').value;
+    
+            if (url === currentURL) {
+                // If the URL is the same as the current URL, show an alert and return
+                alert('이미 같은 링크를 사용하고 있습니다.');
+                return;
+            }
     
             // Make a POST request to your FastAPI endpoint
             const response = await fetch('/shorten', {
@@ -268,14 +266,14 @@
                 qrCodeContainer.style.display = 'block';
     
                 // Update the QR code
-                updateQRCode(shortenedURL.replace('https://sqlr.kr/', ''));
+                updateQRCode(shortenedURL);
             } else {
                 // Handle error
                 shortLinkDiv.style.display = 'none';
                 qrCodeContainer.style.display = 'none'; // Hide QR code container on error
-                alert('URL을 줄이는 동안 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                alert('URL을 줄이는 중에 오류가 발생했습니다. 다시 시도해 주세요.');
             }
         });
-    </script>      
+    </script>    
 </body>
 </html>
