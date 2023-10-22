@@ -155,13 +155,13 @@
             color: #fff !important; /* 텍스트 색상을 하얀색(#fff)으로 설정 */
             text-decoration: none; /* 밑줄 제거 (선택사항) */
         }
-        
+
         a:hover {
             text-decoration: underline; /* 호버 시에 밑줄 추가 (선택사항) */
         }
 
         label {
-            color:white;
+            color: white;
         }
 
         @media (max-width: 768px) {
@@ -169,11 +169,12 @@
                 font-size: 14pt;
             }
         }
+
         @media (min-width: 769px) {
             body {
                 font-size: 130%;
             }
-        } 
+        }
     </style>
     <meta name="description" content="링크를 더 짧게, sqlr.kr">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -196,21 +197,21 @@
     <script>
         // Get the form element
         const form = document.querySelector('form');
-    
+
         // Get the elements for displaying the shortened URL
         const shortLinkDiv = document.getElementById('short-link');
         const shortLinkUrl = document.getElementById('short-link-url');
-    
+
         // Get the QR code container
         const qrCodeContainer = document.getElementById('qr-code-container');
-    
+
         // Add an event listener for the form submission
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-    
+
             // Get the URL input value
             const url = form.querySelector('#url').value;
-    
+
             // Make a POST request to your FastAPI endpoint
             const response = await fetch('/shorten', {
                 method: 'POST',
@@ -219,18 +220,18 @@
                 },
                 body: JSON.stringify({ url }),
             });
-    
+
             if (response.ok) {
                 const data = await response.json();
-    
+
                 // Display the shortened URL
                 const shortenedURL = data.short_link;
                 shortLinkUrl.href = shortenedURL;
                 shortLinkUrl.textContent = shortenedURL.replace('https://', ''); // Remove 'https://'
-    
+
                 // Show the QR code container
                 qrCodeContainer.style.display = 'block';
-    
+
                 // Generate and display the QR code
                 const qrCodeResponse = await fetch(`/generate_qr_code/${encodeURIComponent(shortenedURL)}`);
                 if (qrCodeResponse.ok) {
@@ -242,7 +243,7 @@
                 // Handle error
                 shortLinkDiv.style.display = 'none';
                 qrCodeContainer.style.display = 'none'; // Hide QR code container on error
-                alert('Failed to shorten URL.');
+                alert('URL을 줄이던 도중 오류가 발생했어요. 잠시후 다시 시도해주세요.');
             }
         });
     </script>    
