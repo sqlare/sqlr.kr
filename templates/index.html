@@ -191,7 +191,7 @@
             <input type="url" name="url" id="url" placeholder="https://example.com">
             <button type="submit">단축하기 🚀</button>
         </form>
-        <div id="qr-code-container">
+        <div id="qr-code-container"></div>
     </main>
     <script>
         // Get the form element
@@ -227,7 +227,7 @@
                 shortLinkDiv.style.display = 'block';
     
                 // Generate and display the QR code
-                const qrCodeResponse = await fetch(`/generate_qr_code/${shortenedURL}`);
+                const qrCodeResponse = await fetch(`/generate_qr_code/${encodeURIComponent(shortenedURL)}`);
                 if (qrCodeResponse.ok) {
                     const qrCodeData = await qrCodeResponse.text();
                     // Add the QR code to the HTML
