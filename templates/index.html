@@ -216,7 +216,7 @@
         const shortLinkUrl = document.getElementById('short-link-url');
         const qrCodeContainer = document.getElementById('qr-code-container');
         let previousURL = '';
-
+    
         // Function to update the QR code
         const updateQRCode = async () => {
             const shortenedURL = shortLinkUrl.href;
@@ -224,7 +224,7 @@
                 alert('같은 링크는 생성할 수 없습니다.');
                 return;
             }
-
+    
             // Here, you should have a server endpoint that generates QR codes.
             // You can make a request to that endpoint to get the QR code image.
             const qrCodeResponse = await fetch(`/generate_qr_code/${encodeURIComponent(shortenedURL.replace('https://sqlr.kr/', ''))}`);
@@ -237,7 +237,7 @@
                 qrCodeContainer.style.display = 'none';
                 alert('QR 코드를 생성하는 동안 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
             }
-        };
+        }
     
         // Add an event listener for the form submission
         form.addEventListener('submit', async (e) => {
@@ -254,6 +254,12 @@
                 return;
             } else {
                 document.getElementById('url-validation-message').textContent = '';
+            }
+    
+            // Check if the new URL is the same as the previous one
+            if (url === previousURL) {
+                alert('같은 링크는 생성할 수 없습니다.');
+                return;
             }
     
             // Make a POST request to your FastAPI endpoint
@@ -285,13 +291,15 @@
                 alert('URL을 줄이는 동안 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
             }
         });
+    
         const urlRegex = /^(https?|http):\/\/[^\s/$.?#].[^\s]*$/i;
-
+    
         // Add an input event listener to enable/disable the "단축하기" button based on URL input
         form.querySelector('#url').addEventListener('input', () => {
             const isValidURL = form.querySelector('#url').value.match(urlRegex);
             form.querySelector('#shorten-button').disabled = !isValidURL;
         });
-    </script>    
+    </script>
+        
 </body>
 </html>
