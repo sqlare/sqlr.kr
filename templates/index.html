@@ -89,11 +89,11 @@
         .test {
             display: flex;
             flex-direction: row;
-            height: 20px;
+            height: 50px;
         }
         input[type="url"] {
             width: 100%;
-            height: 100%;
+            height: 50%;
             margin-right: 10px;
             padding: 10px;
             margin-bottom: 10px;
@@ -203,9 +203,8 @@
         <h1><a id="short-link-url" href="">sqlr.kr</a></h1>
         <div id="url-validation-message"></div>
         <form action="/shorten" method="post">
-            <label for="url">URL</label>
             <div class="test">
-                <input type="url" name="url" id="url" placeholder="https://example.com">
+                <input type="url" name="url" id="url" placeholder="🔗➡️">
                 <button type="submit" id="shorten-button" disabled>🚀</button>
             </div>
             <br /><br />
@@ -213,43 +212,29 @@
         </form>
     </main>
     <script>
-        // Get the form element
         const form = document.querySelector('form');
-    
-        // Get the elements for displaying the shortened URL
-        const shortLinkDiv = document.getElementById('short-link');
         const shortLinkUrl = document.getElementById('short-link-url');
-    
-        // Get the QR code container
         const qrCodeContainer = document.getElementById('qr-code-container');
-    
-        let previousURL = ''; // Variable to store the previous URL
-    
+        let previousURL = '';
+
         // Function to update the QR code
         const updateQRCode = async () => {
-            // Get the shortened URL
             const shortenedURL = shortLinkUrl.href;
-    
-            // Check if the URL is the same as the previous one
             if (shortenedURL === previousURL) {
-                // Display an alert if the URL is the same
                 alert('같은 링크는 생성할 수 없습니다.');
                 return;
             }
-    
-            // Generate and display the QR code
+
+            // Here, you should have a server endpoint that generates QR codes.
+            // You can make a request to that endpoint to get the QR code image.
             const qrCodeResponse = await fetch(`/generate_qr_code/${encodeURIComponent(shortenedURL.replace('https://sqlr.kr/', ''))}`);
             if (qrCodeResponse.ok) {
                 const qrCodeData = await qrCodeResponse.text();
-                // Clear the previous QR code, if any
                 qrCodeContainer.innerHTML = '';
-                // Add the new QR code to the HTML
                 qrCodeContainer.innerHTML = qrCodeData;
-                // Update the previous URL
                 previousURL = shortenedURL;
             } else {
-                // Handle error
-                qrCodeContainer.style = display = 'none'; // Hide QR code container on error
+                qrCodeContainer.style.display = 'none';
                 alert('QR 코드를 생성하는 동안 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
             }
         };
