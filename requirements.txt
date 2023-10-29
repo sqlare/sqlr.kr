@@ -4,5 +4,5 @@ nest_asyncio
 lxml
 metadata_parser
 emoji
-dotenv
+python-dotenv
 qrcode
