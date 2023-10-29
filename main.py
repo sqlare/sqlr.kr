@@ -111,8 +111,10 @@ async def redirect_to_original(request: Request, short_key: str, password: Union
 
         if security(password, salt, password_hash).is_correct_password():
             return RedirectResponse(url)
+        else:
+            return HTTP_401(request)
     except:
-        return HTTP_401(request)
+        return RedirectResponse(url)
 
 @app.get("/d/{short_key}")
 async def redirect_to_original(request: Request, short_key: str):
