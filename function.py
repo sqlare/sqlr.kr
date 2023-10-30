@@ -21,7 +21,7 @@ def HTTP_401(request: object):
 
 class security():
     def __init__(self, password: str, salt: bytes = None, password_hash: bytes = None, algorithm: str = 'sha3_256', iterations: int = 100000, dklen: Union[int, None] = None) -> None:
-        self.password = password.encode()
+        self.password = password.encode("utf-8")
         self.salt = salt
         self.password_hash = password_hash
         self.algorithm = algorithm

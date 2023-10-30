@@ -13,4 +13,4 @@ class Link_QRCODE(BaseModel):
 
 #key and password
 class Password(BaseModel):
-    password: str
+    password: Union[str, None] = None

@@ -108,13 +108,16 @@ async def redirect_to_original(request: Request, short_key: str, password: Union
     try:
         salt = bytes.fromhex(db["salt"])
         password_hash = bytes.fromhex(db["password_hash"])
+    except:
+        return RedirectResponse(url)
 
-        if security(password, salt, password_hash).is_correct_password():
+    if isinstance(password, str):
+        if security(str(password), salt, password_hash).is_correct_password():
             return RedirectResponse(url)
         else:
             return HTTP_401(request)
-    except:
-        return RedirectResponse(url)
+    else:
+        return HTTP_401(request)
 
 @app.get("/d/{short_key}")
 async def redirect_to_original(request: Request, short_key: str):
