@@ -93,7 +93,7 @@ def generate_qr_code_image(data: str, version: int = 1, error_correction: int = 
         BytesIO: img_byte
     """
 
-    img = qrcode.make(data, version, error_correction, box_size, border, mask_pattern)
+    img = qrcode.make(data, version = version, error_correction = error_correction, box_size = box_size, border = border, image_factory = None, mask_pattern = mask_pattern)
     img_byte_array = io.BytesIO()
     img.save(img_byte_array)
     img_byte_array.seek(0)
