@@ -9,7 +9,12 @@ class Link_Donate(BaseModel):
     url: str
 
 class Link_QRCODE(BaseModel):
-    url: str
+    data: str
+    version: Union[int, None] = 1
+    error_correction: Union[int, None] = 0
+    box_size: Union[int, None] = 10
+    border: Union[int, None] = 4
+    mask_pattern: Union[int, None] = 0
 
 #key and password
 class Password(BaseModel):

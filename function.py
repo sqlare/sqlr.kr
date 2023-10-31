@@ -11,6 +11,14 @@ import qrcode
 import io
 
 def pool(db_num: int = 0):
+    """Redis_Pool
+
+    Args:
+        db_num (int, optional): The minimum value is 0. Defaults to 0.
+
+    Returns:
+        ConnectionPool: Redis ConnectionPool
+    """
     return redis.ConnectionPool().from_url(f"{DB}/{db_num}")
 
 def HTTP_404(request: object):
@@ -43,7 +51,7 @@ def get_metadata(url: str):
 async def generate_key(length: int = 4) -> AsyncGenerator:
     __length__ = length
     while True:
-        key = ''.join(random.choice(string.ascii_letters) for _ in range(__length__))
+        key = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(__length__))
 
         db = redis.Redis(connection_pool=pool())
         db_key = await db.json().get(key)
@@ -70,8 +78,22 @@ async def generate_emoji_key(length: int = 4) -> AsyncGenerator:
         else:
             __length__ += 1
 
-def generate_qr_code_image(data: str):
-    img = qrcode.make(data)
+def generate_qr_code_image(data: str, version: int = 1, error_correction: int = 0, box_size: int = 10, border: int = 4, mask_pattern: int = 0):
+    """generate_qr_code_image
+
+    Args:
+        data (str): qrcode data.
+        version (int, optional): 1 ~ 40. Defaults to None.
+        error_correction (int, optional): ERROR_CORRECT_L = 1, ERROR_CORRECT_M = 0, ERROR_CORRECT_Q = 3, ERROR_CORRECT_H = 2 (L< M < Q < H). Defaults to 0.
+        box_size (int, optional): qrcode size. Defaults to 10.
+        border (int, optional): qrcode blank size. Defaults to 4.
+        mask_pattern (_type_, optional): 0 ~ 7. Defaults to None.
+
+    Returns:
+        BytesIO: img_byte
+    """
+
+    img = qrcode.make(data, version, error_correction, box_size, border, mask_pattern)
     img_byte_array = io.BytesIO()
     img.save(img_byte_array)
     img_byte_array.seek(0)

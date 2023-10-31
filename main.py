@@ -75,18 +75,21 @@ async def shorten_donate(request: Request, body: Link_Donate):
     return {"short_link": f"{DOMAIN}/d/{key}"}
 
 @app.post("/shorten_qr_code", response_class=FileResponse)
-async def generate_qr_code(body: Link_QRCODE):
+async def generate_qr_code(body: Link_QRCODE, file: Union[bool, None] = None):
     key = await anext(generate_key())
-    url_hash = base64.b85encode(body.url.encode())
+    url_hash = base64.b85encode(body.data.encode())
     hgQs = {"url": url_hash.hex()}
 
     db = redis.Redis(connection_pool=pool(KEY_DB))
     await db.json().set(key, Path.root_path(), hgQs)
     await db.close()
 
-    img = generate_qr_code_image(f"{DOMAIN}/{key}").read()
+    img = generate_qr_code_image(f"{DOMAIN}/{key}", body.version, body.error_correction, body.box_size, body.border, body.mask_pattern).read()
 
-    return HTMLResponse(content=f'<img src="data:image/png;base64,{base64.b64encode(img).decode()}" />')
+    if file:
+        return Response(img)
+    else:
+        return HTMLResponse(content=f'<img src="data:image/png;base64,{base64.b64encode(img).decode()}" />')
 
 @app.get("/{short_key}")
 async def redirect_to_original(request: Request, short_key: str, password: Union[str, None] = None):
