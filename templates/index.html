@@ -242,11 +242,7 @@
         // Function to update the QR code
         const updateQRCode = async () => {
             const shortenedURL = shortLinkUrl.href;
-            if (shortenedURL === previousURL) {
-                alert('같은 링크는 생성할 수 없습니다.');
-                return;
-            }
-    
+
             // Here, you should have a server endpoint that generates QR codes.
             // You can make a request to that endpoint to get the QR code image.
             const qrCodeResponse = await fetch(`/generate_qr_code/${encodeURIComponent(shortenedURL.replace('https://sqlr.kr/', ''))}`);
@@ -254,12 +250,13 @@
                 const qrCodeData = await qrCodeResponse.text();
                 qrCodeContainer.innerHTML = '';
                 qrCodeContainer.innerHTML = qrCodeData;
-                previousURL = shortenedURL;
+                previousURL = shortenedURL; // 업데이트된 URL로 previousURL을 업데이트합니다.
             } else {
                 qrCodeContainer.style.display = 'none';
                 alert('QR 코드를 생성하는 동안 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
             }
         }
+
     
         // Add an event listener for the form submission
         form.addEventListener('submit', async (e) => {
