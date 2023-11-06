@@ -188,6 +188,10 @@
                 font-size: 130%;
             }
         }
+        footer {
+            position: fixed;
+            bottom: 0%;
+        }
     </style>
     <meta name="description" content="링크를 더 짧게, sqlr.kr">
     <meta name="viewport" content="width=device-width, initial-scale: 1.0">
@@ -210,8 +214,26 @@
             <br /><br />
             <div id="qr-code-container"></div>
         </form>
+        <footer>
+            <label style="font-size: 15px;">© Sqlare / 위 사이트는 항상 Dev 버전으로 유지됩니다.</label>
+        </footer>
+        <div id="info-popup" style="display: none; position: fixed; bottom: 2.5%; padding: 10px; border-radius: 10px; color: white;">
+            <p style="font-size: 12pt;">Python 3.10.12 / Ubuntu 22.04.3 LTS</p>
+        </div>
     </main>
     <script>
+        const footer = document.querySelector('footer');
+        const infoPopup = document.getElementById('info-popup');
+
+        footer.addEventListener('mouseover', () => {
+            infoPopup.style.display = 'block';
+        });
+
+        // footer 밖으로 마우스가 나갔을 때 팝업을 숨기는 함수
+        footer.addEventListener('mouseout', () => {
+            infoPopup.style.display = 'none';
+        });
+
         const form = document.querySelector('form');
         const shortLinkUrl = document.getElementById('short-link-url');
         const qrCodeContainer = document.getElementById('qr-code-container');
@@ -247,7 +269,6 @@
             const url = form.querySelector('#url').value;
     
             // Regular expression to validate URLs
-            
             // Check if the URL is valid using the regex
             if (!url.match(urlRegex)) {
                 document.getElementById('url-validation-message').textContent = '유효한 URL이 아닙니다.';
@@ -299,6 +320,7 @@
             const isValidURL = form.querySelector('#url').value.match(urlRegex);
             form.querySelector('#shorten-button').disabled = !isValidURL;
         });
-    </script>        
+    </script>
+         
 </body>
 </html>
