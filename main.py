@@ -12,7 +12,7 @@ import base64
 app = FastAPI(title="sqlr.kr",
     summary="test",
     description="sqlr.kr is a URL shortening service.",
-    version="redis-a4.0.0")
+    version="redis-4.1.0")
 
 app.add_middleware(
     CORSMiddleware,
