@@ -10,6 +10,7 @@ from redis.commands.json.path import Path
 import base64
 
 app = FastAPI(title="sqlr.kr",
+    summary="test",
     description="sqlr.kr is a URL shortening service.",
     version="redis-a4.0.0")
 
@@ -75,7 +76,7 @@ async def shorten_donate(request: Request, body: Link_Donate):
     return {"short_link": f"{DOMAIN}/d/{key}"}
 
 @app.post("/shorten_qr_code", response_class=FileResponse)
-async def generate_qr_code(body: Link_QRCODE, file: Union[bool, None] = None):
+async def generate_qr_code(body: Link_QRCODE, file: Optional[bool] = None):
     key = await anext(generate_key())
     url_hash = base64.b85encode(body.data.encode())
     hgQs = {"url": url_hash.hex()}
@@ -92,7 +93,7 @@ async def generate_qr_code(body: Link_QRCODE, file: Union[bool, None] = None):
         return HTMLResponse(content=f'<img src="data:image/png;base64,{base64.b64encode(img).decode()}" />')
 
 @app.get("/{short_key}")
-async def redirect_to_original(request: Request, short_key: str, password: Union[str, None] = None):
+async def redirect_to_original(request: Request, short_key: str, password: Optional[str] = None):
     db_c = redis.Redis(connection_pool=pool(KEY_DB))
     db = await db_c.json().jsonget(short_key, Path.root_path())
     await db_c.close()
