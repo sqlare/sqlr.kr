@@ -10,7 +10,7 @@ from redis.commands.json.path import Path
 import base64
 
 app = FastAPI(title="sqlr.kr",
-    summary="test",
+    summary="Made By Dev_Nergis(BACK), imnyang(BACK), ny64(FRONT)",
     description="sqlr.kr is a URL shortening service.",
     version="redis-4.1.0")
 
