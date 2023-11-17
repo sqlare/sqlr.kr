@@ -248,7 +248,7 @@
             // Generate and display the QR code
 
             // Get the URL input value
-            const url = form.querySelector('#url').value;
+            const data = form.querySelector('#url').value;
 
             // Make a POST request to your FastAPI endpoint
             const qrCodeResponse = await fetch('/shorten_qr_code', {
@@ -256,7 +256,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ url }),
+                body: JSON.stringify({ data }),
             });
 
             if (qrCodeResponse.ok) {
