@@ -61,7 +61,7 @@ async def shorten_emoji_link(body: Link):
     return {"short_link": f"{DOMAIN}/{key}"}
 
 @app.post("/tossDonate", response_class=ORJSONResponse)
-async def shorten_donate(request: Request, body: Link_Donate):
+async def shorten_donate(body: Link_Donate):
     if not body.url.startswith("https://toss.me"):
         return ORJSONResponse(content={"error": "이 기능은 무조건 'https://toss.me'로 시작해야해요."}, status_code=400)
     
