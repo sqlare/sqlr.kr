@@ -45,7 +45,7 @@ class security():
         return hmac.compare_digest(self.password_hash, hashlib.pbkdf2_hmac(self.algorithm, self.password, self.salt, self.iterations, self.dklen))
 
 def get_metadata(url: str):
-    metadata = metadata_parser.MetadataParser(url, search_head_only=False, requests_timeout=10)
+    metadata = metadata_parser.MetadataParser(url, search_head_only=True, requests_timeout=10)
     return metadata.metadata
 
 async def generate_key(length: int = 4) -> AsyncGenerator:
