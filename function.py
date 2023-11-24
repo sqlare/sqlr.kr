@@ -99,3 +99,5 @@ def generate_qr_code_image(data: str, version: int = 1, error_correction: int = 
     img_byte_array.seek(0)
 
     return img_byte_array
+
+# 코체 멍청이
