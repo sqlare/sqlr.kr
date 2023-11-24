@@ -19,3 +19,5 @@ class Link_QRCODE(BaseModel):
 #key and password
 class Password(BaseModel):
     password: Union[str, None] = None
+
+# 코체 멍청이
