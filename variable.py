@@ -16,3 +16,5 @@ KEY_DB = dotenv.get_key(".env", "KEY_DB")
 DONATE_DB = dotenv.get_key(".env", "DONATE_DB")
 PEPPER_DB = dotenv.get_key(".env", "PEPPER_DB")
 EMOJI_DB = dotenv.get_key(".env", "EMOJI_DB")
+
+# 코체 멍청이
